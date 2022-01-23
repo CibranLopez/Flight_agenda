@@ -137,7 +137,9 @@ void Dijkstra (node *nodes, unsigned N_nodes, unsigned source, unsigned node_goa
     if ((expanded = (char*) malloc(N_nodes * sizeof(char))) == NULL)
         ExitError("when allocating memory for the expanded vector", 73);
     
-    nodes[source].distance = 0.;
+    for (int i = 0; i < N_nodes; i++)
+        expanded[i] = 0;
+    
     add_with_priority(source, &Pq, nodes);
     
     while (Pq != NULL) {
@@ -150,7 +152,7 @@ void Dijkstra (node *nodes, unsigned N_nodes, unsigned source, unsigned node_goa
             if (expanded[adj])
                 continue;
             
-            float dist_aux;
+            unsigned dist_aux;
             
             days = extract_number_days(nodes[actual_node].distance); // This makes possible to verify if we are able to take a flight.
             
