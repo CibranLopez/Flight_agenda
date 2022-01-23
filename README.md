@@ -1,4 +1,4 @@
-# Flight_agenda
+# Flight agenda
 
 Here an implementation of Dijkstra algorithm can be found, devoted to solve the minimal path between three different airports.
 
