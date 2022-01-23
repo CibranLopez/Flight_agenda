@@ -9,6 +9,7 @@
 #include "auxiliar_functions.h"
 
 #define input_file_name "Flight201301u.csv"
+#define node_star_time 9*60
 
 
 /* Here starts the main program, executing the previously defined Dijikstra's algorithm. Different combinations of starting and ending airports can be selected. */
@@ -101,23 +102,17 @@ int main() {
         nodes[i].parent = UINT_MAX;
     }
     
-    char *start_name = "REU", *goal_name = "ILD";
+    //char *start_name = "REU", *goal_name = "ILD";
     //char *start_name = "AAA", *goal_name = "GKA";
-    //char *start_name = "GDT", *goal_name = "JGO";
+    char *start_name = "GDT", *goal_name = "JGO";
     unsigned node_start = node_search(start_name, nodes, N_nodes), node_goal = node_search(goal_name, nodes, N_nodes);
-    int node_star_time = 9*60;
     
-    /* We only want the departure from 9am to be taken into account. For simplicity, we put the other departure time to infinity */
-    for (i = 0; i < nodes[node_start].nsucc; i++) {
-        if (nodes[node_start].arrow[i].departure_time < node_star_time)
-            nodes[node_start].arrow[i].departure_time = UINT_MAX;
-    }
-    
+    /* We only want the departure from 9am to be taken into account. */
+    nodes[node_start].distance = node_star_time;
     
     Dijkstra(nodes, N_nodes, node_start, node_goal);
     
     register unsigned v = node_goal, pv = nodes[v].parent, ppv;
-    nodes[node_goal].parent = UINT_MAX;
     
     while (v != node_start) { // Reconstructs the path backwards.
         ppv = nodes[pv].parent;
@@ -126,10 +121,12 @@ int main() {
         pv = ppv;
     }
     
+    nodes[node_goal].parent = UINT_MAX;
+    
     printf("Optimal path found:\n");
     printf("  Airport name  | Departure | Arrival\n");
     printf("  ------------  | --------- | -------\n");
-    printf("       %s      |    %u\n", nodes[node_start].name, node_star_time);
+    printf("       %s      |           |   %u\n", nodes[node_start].name, nodes[node_start].distance);
 
     for (v = nodes[node_start].parent; v != UINT_MAX; v = nodes[v].parent)
         printf("       %s      |    %u   |   %u\n", nodes[v].name, nodes[v].departure, nodes[v].distance);
